@@ -111,7 +111,14 @@
                             "key2" "val2"}]}
              obj2 {"test" [{"key2" "val2"}]}]
          (fact "nil key vs absent key within a vector"
-               (diff obj1 obj2) => [{"op" "remove", "path" "/test/0/key1"}])))
+               (diff obj1 obj2) => [{"op" "remove", "path" "/test/0/key1"}]))
+       (let [obj1    {"xs" [{"a" "0"} {"b" "1"}]}
+             obj2    {"xs" [{"a" "0"} {"b" "2"} {"c" "3"} {"d" "4"}]}
+             patches [{"op" "replace" "path" "/xs/1/b" "value" "2"}
+                      {"op" "add" "path" "/xs/2" "value" {"c" "3"}}
+                      {"op" "add" "path" "/xs/3" "value" {"d" "4"}}]]
+         (fact "array is patched correctly"
+               (diff obj1 obj2) => patches)))
 
 (facts "Happy path JSON patch"
        (let [obj1 {"foo" "bar"}
